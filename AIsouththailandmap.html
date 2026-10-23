@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แผนที่ดาวเทียม Google Maps - 3 จังหวัดภาคใต้</title>
+    <style>
+        /* กำหนดให้แผนที่แสดงผลเต็มหน้าจอ */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tahoma', sans-serif;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        .info-window {
+            padding: 5px;
+            color: #333;
+        }
+        .info-window h3 {
+            margin: 0 0 5px 0;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- พื้นที่สำหรับแสดงแผนที่ -->
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            // 1. กำหนดพิกัดกึ่งกลางและระดับการซูม
+            const centerLatLng = { lat: 7.7500, lng: 99.5000 };
+
+            // 2. สร้างแผนที่ Google Maps โดยกำหนด mapTypeId เป็น 'hybrid' (ภาพดาวเทียม + มีชื่อสถานที่)
+            // หากต้องการภาพดาวเทียม pure ไม่มีชื่อสถานที่ ให้เปลี่ยนเป็น 'satellite'
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 8,
+                center: centerLatLng,
+                mapTypeId: 'hybrid' 
+            });
+
+            // 3. ข้อมูลจุดปักหมุด 3 จังหวัด
+            const locations = [
+                {
+                    title: "จุดที่ 1: จังหวัดสตูล",
+                    position: { lat: 6.6238, lng: 100.0674 },
+                    description: "จังหวัดทางภาคใต้ฝั่งอันดามัน ติดกับประเทศมาเลเซีย"
+                },
+                {
+                    title: "จุดที่ 2: จังหวัดกระบี่",
+                    position: { lat: 8.0863, lng: 98.9063 },
+                    description: "เมืองท่องเที่ยวชายทะเลอันดามันที่มีชื่อเสียง"
+                },
+                {
+                    title: "จุดที่ 3: จังหวัดนครศรีธรรมราช",
+                    position: { lat: 8.4304, lng: 99.9631 },
+                    description: "เมืองประวัติศาสตร์และศูนย์กลางสำคัญทางภาคใต้ฝั่งอ่าวไทย"
+                }
+            ];
+
+            // สร้าง InfoWindow สำหรับแสดงข้อมูลเมื่อกดที่หมุด
+            const infoWindow = new google.maps.InfoWindow();
+
+            // 4. วนลูปปักหมุดลงบนแผนที่
+            locations.forEach((loc) => {
+                const marker = new google.maps.Marker({
+                    position: loc.position,
+                    map: map,
+                    title: loc.title,
+                    animation: google.maps.Animation.DROP // ใส่ Animation หมุดหล่นลงมา
+                });
+
+                // เพิ่ม Event เมื่อผู้ใช้คลิกที่หมุด
+                marker.addListener("click", () => {
+                    const contentString = `
+                        <div class="info-window">
+                            <h3>${loc.title}</h3>
+                            <p>${loc.description}</p>
+                            <small>พิกัด: ${loc.position.lat}, ${loc.position.lng}</small>
+                        </div>
+                    `;
+                    infoWindow.setContent(contentString);
+                    infoWindow.open(map, marker);
+                });
+            });
+        }
+    </script>
+
+    <!-- 
+      ดึง Google Maps JavaScript API
+      *** นำ API Key ของคุณมาใส่แทนที่คำว่า YOUR_API_KEY_HERE ใน URL ด้านล่างนี้ ***
+    -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5l0aPyGFqiqY5DpqOYf-8YhN_eYHHobU&callback=initMap" async defer></script>
+
+</body>
+</html>
